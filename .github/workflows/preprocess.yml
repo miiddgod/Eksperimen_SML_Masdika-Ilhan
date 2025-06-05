@@ -19,6 +19,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r preprocessing/requirements.txt
+          
+      - name: Download dataset
+        run: |
+          wget -O data/raw/diabetes.csv https://github.com/miiddgod/Eksperimen_SML_Masdika-Ilhan/blob/main/data/raw/diabetes.csv
 
       - name: Create directories
         run: |
@@ -32,9 +36,12 @@ jobs:
             --output data/processed/diabetes_processed.csv
 
       - name: Commit processed data
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
           git config --global user.name "miiddgod"
           git config --global user.email "hafizhbachtiyar4@gmail.com"
+          git remote set-url origin https://${{ secrets.PAT }}@github.com/${{ github.repository }}.git
           git add data/processed/
           git commit -m "[Automated] Update processed data" || echo "No changes to commit"
           git push
