@@ -5,8 +5,12 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import argparse
+import os
 
 def preprocess_data(input_path, output_path):
+    # Buat direktori output jika belum ada
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
     # Load data
     df = pd.read_csv(input_path)
     

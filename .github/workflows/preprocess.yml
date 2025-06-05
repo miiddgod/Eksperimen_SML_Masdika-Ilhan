@@ -20,6 +20,11 @@ jobs:
         run: |
           pip install -r preprocessing/requirements.txt
 
+      - name: Create directories
+        run: |
+          mkdir -p data/raw
+          mkdir -p data/processed
+
       - name: Run preprocessing script
         run: |
           python preprocessing/automate_Masdika_Ilhan.py \
