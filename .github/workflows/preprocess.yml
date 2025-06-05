@@ -1,0 +1,35 @@
+name: Eksperimen_SML_Masdika-Ilhan
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install -r preprocessing/requirements.txt
+
+      - name: Run preprocessing script
+        run: |
+          python preprocessing/automate_Masdika_Ilhan.py \
+            --input data/raw/diabetes.csv \
+            --output data/processed/diabetes_processed.csv
+
+      - name: Commit processed data
+        run: |
+          git config --global user.name "miiddgod"
+          git config --global user.email "hafizhbachtiyar4@gmail.com"
+          git add data/processed/
+          git commit -m "[Automated] Update processed data" || echo "No changes to commit"
+          git push
