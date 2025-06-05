@@ -10,9 +10,16 @@ import os
 def preprocess_data(input_path, output_path):
     # Buat direktori output jika belum ada
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
+
     # Load data
-    df = pd.read_csv(input_path)
+    # df = pd.read_csv(input_path)
+    # df = pd.read_csv(input_path, 
+    #              error_bad_lines=False,  # Skip baris error
+    #              warn_bad_lines=True,    # Tampilkan warning
+    #              engine='python')        # Gunakan engine Python
+    
+    chunks = pd.read_csv(input_path, chunksize=1000)
+    df = pd.concat(chunks)
     
     # 1. Handle zero values (sesuai notebook)
     zero_features = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
