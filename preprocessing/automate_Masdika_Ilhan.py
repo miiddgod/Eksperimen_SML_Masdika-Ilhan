@@ -6,20 +6,33 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import argparse
 import os
+from io import StringIO
+
+def clean_csv_file(input_path):
+    """Normalize line endings and fix malformed lines"""
+    with open(input_path, 'r', encoding='utf-8', newline='') as f:
+        content = f.read()
+    
+    # Normalize line endings and filter valid lines
+    lines = []
+    for line in content.splitlines():
+        if line.count(',') == 8:  # Sesuai jumlah kolom dataset diabetes
+            lines.append(line)
+    
+    return StringIO('\n'.join(lines))
 
 def preprocess_data(input_path, output_path):
     # Buat direktori output jika belum ada
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    # Load data
-    # df = pd.read_csv(input_path)
-    # df = pd.read_csv(input_path, 
-    #              error_bad_lines=False,  # Skip baris error
-    #              warn_bad_lines=True,    # Tampilkan warning
-    #              engine='python')        # Gunakan engine Python
+    # Baca dan bersihkan file
+    clean_data = clean_csv_file(input_path)
     
-    chunks = pd.read_csv(input_path, chunksize=1000)
-    df = pd.concat(chunks)
+    # Load ke DataFrame
+    df = pd.read_csv(clean_data)
+
+    # # Load data
+    # df = pd.read_csv(input_path)
     
     # 1. Handle zero values (sesuai notebook)
     zero_features = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']

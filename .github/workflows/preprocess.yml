@@ -19,6 +19,15 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r preprocessing/requirements.txt
+
+      - name: Validate CSV file
+        run: |
+          echo "Checking CSV structure..."
+          awk -F',' 'NF!=9 {print "Line " NR " has " NF " fields"}' data/raw/diabetes.csv | tee validation.log
+          if [ -s validation.log ]; then
+            echo "::error::Invalid CSV structure detected"
+            exit 1
+          fi
           
       - name: Download dataset
         run: |
